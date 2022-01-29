@@ -1,0 +1,38 @@
+{
+  "name": "cypress-mysql",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@types/mysql": "2.15.20",
+    "mysql2": "2.3.3",
+    "ora": "5.4.1"
+  },
+  "devDependencies": {
+    "@types/lodash": "4.14.178",
+    "@types/node": "16.11.21",
+    "cypress": "9.3.1",
+    "typescript": "4.5.5",
+    "semantic-release": "19.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LeJeanbono/cypress-mysql.git"
+  },
+  "author": "Jean-Michel LECLERCQ",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LeJeanbono/cypress-mysql/issues"
+  },
+  "homepage": "https://github.com/LeJeanbono/cypress-mysql#readme",
+  "publishConfig": {
+    "access": "public"
+  }
+}

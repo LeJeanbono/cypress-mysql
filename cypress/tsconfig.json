@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "lib": [
+            "es5",
+            "dom"
+        ],
+        "types": [
+            "cypress"
+        ],
+        "baseUrl": "../packages",
+        "paths": {
+            "LeJeanbono/mysql": [
+                "../src"
+            ],
+        }
+    },
+    "include": [
+        "**/*.ts"
+    ]
+}

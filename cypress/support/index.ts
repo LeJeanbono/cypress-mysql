@@ -1,0 +1,1 @@
+import 'LeJeanbono/cypress-mysql/commands';

@@ -1,0 +1,11 @@
+{
+    "env": {
+        "MYSQL_HOST": "localhost",
+        "MYSQL_PORT": "3307",
+        "MYSQL_DB": "mydb",
+        "MYSQL_USER": "root",
+        "MYSQL_PASSWORD": "root"
+    },
+    "video": false,
+    "screenshotOnRunFailure": false
+}
