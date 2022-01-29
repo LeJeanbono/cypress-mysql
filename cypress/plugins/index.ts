@@ -1,5 +1,5 @@
 /// <reference types="cypress" />
-const { mysqlTasks } = require('@cypress-tools/mysql');
+const { mysqlTasks } = require('LeJeanbono/cypress-mysql');
 
 /**
  * @type {Cypress.PluginConfig}

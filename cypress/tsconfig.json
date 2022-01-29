@@ -10,7 +10,7 @@
         ],
         "baseUrl": "../packages",
         "paths": {
-            "LeJeanbono/mysql": [
+            "LeJeanbono/cypress-mysql": [
                 "../src"
             ],
         }
