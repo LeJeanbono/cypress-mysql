@@ -8,7 +8,8 @@
   ],
   "scripts": {
     "build": "tsc",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "cy:open": "cypress open"
   },
   "dependencies": {
     "@types/mysql": "2.15.20",

@@ -2,7 +2,7 @@
 /// <reference types="mysql" />
 
 import mysql from "mysql2";
-import { Logger } from "@cypress-tools/common";
+import { Logger } from "./logger";
 import { Column, InsertInto, MysqlConfig } from "./models";
 
 let configuration: Cypress.PluginConfigOptions;
@@ -14,11 +14,11 @@ function init(config: Cypress.PluginConfigOptions, options: MysqlConfig) {
     configuration = config;
     pluginConfig = options;
     client = mysql.createConnection({
-        host: configuration.env.TOOL_MYSQL_HOST,
-        port: configuration.env.TOOL_MYSQL_PORT,
-        database: configuration.env.TOOL_MYSQL_DB,
-        user: configuration.env.TOOL_MYSQL_USER,
-        password: configuration.env.TOOL_MYSQL_PASSWORD,
+        host: configuration.env.MYSQL_HOST,
+        port: configuration.env.MYSQL_PORT,
+        database: configuration.env.MYSQL_DB,
+        user: configuration.env.MYSQL_USER,
+        password: configuration.env.MYSQL_PASSWORD,
     });
     logger = new Logger(pluginConfig.debug);
 }
@@ -113,4 +113,14 @@ export function mysqlInsertInto(options: InsertInto): Promise<any> {
         return queryFirstRow(insertQuery);
     }
     throw new Error('Need to specify data or datas attribute')
+}
+
+export function plugin(config: Cypress.PluginConfigOptions, on: Cypress.PluginEvents, options: MysqlConfig = new MysqlConfig()) {
+    init(config, options)
+    on('task', {
+        mysqlQuery,
+        mysqlCreateTable,
+        mysqlDropTable,
+        mysqlInsertInto
+    })
 }

@@ -1,4 +1,4 @@
-import { MysqlTask } from 'LeJeanbono/cypress-mysql/tasks'
+import { MysqlTask } from '../../dist/tasks'
 
 describe('Mysql Tasks', () => {
 

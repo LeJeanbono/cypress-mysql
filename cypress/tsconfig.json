@@ -6,14 +6,9 @@
             "dom"
         ],
         "types": [
-            "cypress"
+            "cypress",
+            "node"
         ],
-        "baseUrl": "../packages",
-        "paths": {
-            "LeJeanbono/cypress-mysql": [
-                "../src"
-            ],
-        }
     },
     "include": [
         "**/*.ts"
