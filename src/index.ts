@@ -3,7 +3,7 @@
 
 import mysql from "mysql2";
 import { Logger } from "./logger";
-import { Column, InsertInto, MysqlConfig } from "./models";
+import { Column, InsertInto, MysqlConfig, Table } from "./models";
 
 let configuration: Cypress.PluginConfigOptions;
 let pluginConfig: MysqlConfig;
@@ -23,7 +23,7 @@ function init(config: Cypress.PluginConfigOptions, options: MysqlConfig) {
     logger = new Logger(pluginConfig.debug);
 }
 
-function queryRows<T>(query: string): Promise<T[] | null> {
+function queryRows<T>(query: string): Promise<T[]> {
     logger.log(query);
     return new Promise((resolve, reject) => {
         client.query(query, (err: Error, res) => {
@@ -32,7 +32,7 @@ function queryRows<T>(query: string): Promise<T[] | null> {
                 return reject(err);
             }
             // @ts-ignore
-            resolve(res[0] ?? null);
+            resolve(res);
         })
     })
 }
@@ -50,7 +50,7 @@ function queryFirstRow<T>(query: string): Promise<T> {
     })
 }
 
-export const mysqlTasks = (config: Cypress.PluginConfigOptions, options: MysqlConfig = new MysqlConfig()) => {
+/*export const mysqlTasks = (config: Cypress.PluginConfigOptions, options: MysqlConfig = new MysqlConfig()) => {
     init(config, options)
     return {
         mysqlQuery,
@@ -58,7 +58,7 @@ export const mysqlTasks = (config: Cypress.PluginConfigOptions, options: MysqlCo
         mysqlDropTable,
         mysqlInsertInto
     }
-}
+}*/
 
 export function mysqlQuery<T>(query: string): Promise<T[] | null> {
     return new Promise((resolve, reject) => {
@@ -115,12 +115,18 @@ export function mysqlInsertInto(options: InsertInto): Promise<any> {
     throw new Error('Need to specify data or datas attribute')
 }
 
+export function mysqlSelectAll<T>(options: Table): Promise<T[]> {
+    const query = `SELECT * FROM ${options.table}`;
+    return queryRows(query);
+}
+
 export function plugin(config: Cypress.PluginConfigOptions, on: Cypress.PluginEvents, options: MysqlConfig = new MysqlConfig()) {
     init(config, options)
     on('task', {
         mysqlQuery,
         mysqlCreateTable,
         mysqlDropTable,
-        mysqlInsertInto
+        mysqlInsertInto,
+        mysqlSelectAll
     })
 }
