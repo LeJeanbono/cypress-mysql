@@ -20,3 +20,13 @@ export interface SelectById extends Table {
     idKey?: string;
     id: string | number;
 }
+
+interface WhereClause {
+    column: string;
+    operand?: string;
+    value: string | number;
+}
+
+export interface SelectWhere extends Table {
+    where: WhereClause[]
+}

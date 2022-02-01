@@ -6,5 +6,6 @@ export enum MysqlTask {
     INSERT = 'mysqlInsertInto',
     DROP_TABLE = 'mysqlDropTable',
     DELETE_ALL = 'mysqlDeleteAll',
-    SELECT_BY_ID = 'mysqlSelectById'
+    SELECT_BY_ID = 'mysqlSelectById',
+    SELECT_WHERE = 'mysqlSelectWhere'
 }

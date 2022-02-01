@@ -1,9 +1,9 @@
 /// <reference types="cypress" />
 /// <reference types="mysql" />
 
-import mysql from "mysql2";
+import mysql, { OkPacket, QueryError, ResultSetHeader, RowDataPacket } from "mysql2";
 import { Logger } from "./logger";
-import { Column, InsertInto, MysqlConfig, Table } from "./models";
+import { Column, InsertInto, MysqlConfig, SelectWhere, Table } from "./models";
 
 let configuration: Cypress.PluginConfigOptions;
 let pluginConfig: MysqlConfig;
@@ -26,7 +26,8 @@ function init(config: Cypress.PluginConfigOptions, options: MysqlConfig) {
 function queryRows<T>(query: string): Promise<T[]> {
     logger.log(query);
     return new Promise((resolve, reject) => {
-        client.query(query, (err: Error, res) => {
+        client.query(query, (err: QueryError, res) => {
+            console.log(res)
             if (err) {
                 logger.log(err.message)
                 return reject(err);
@@ -37,30 +38,24 @@ function queryRows<T>(query: string): Promise<T[]> {
     })
 }
 
-function queryFirstRow<T>(query: string): Promise<T> {
+function queryFirstRow<T>(query: string, isResultSetHeader = false): Promise<T | ResultSetHeader | OkPacket | OkPacket[] | RowDataPacket[] | RowDataPacket[][]> {
     logger.log(query);
     return new Promise((resolve, reject) => {
         client.query(query, (err: Error, res) => {
             if (err) {
                 return reject(err);
             }
-            // @ts-ignore
-            resolve(res[0] ?? null);
+            if (isResultSetHeader) {
+                resolve(res);
+            } else {
+                // @ts-ignore
+                resolve(res[0] ?? null);
+            }
         })
     })
 }
 
-/*export const mysqlTasks = (config: Cypress.PluginConfigOptions, options: MysqlConfig = new MysqlConfig()) => {
-    init(config, options)
-    return {
-        mysqlQuery,
-        mysqlCreateTable,
-        mysqlDropTable,
-        mysqlInsertInto
-    }
-}*/
-
-export function mysqlQuery<T>(query: string): Promise<T[] | null> {
+function mysqlQuery<T>(query: string): Promise<T[] | null> {
     return new Promise((resolve, reject) => {
         logger.log(query)
         client.query(query, (err, result) => {
@@ -73,7 +68,7 @@ export function mysqlQuery<T>(query: string): Promise<T[] | null> {
     });
 }
 
-export function mysqlCreateTable(options: { table: string, columns: Column[] }) {
+function mysqlCreateTable(options: { table: string, columns: Column[] }) {
     let queryColumns = '';
     options.columns.map((column, index) => {
         queryColumns += `${column.key} ${column.type}`
@@ -85,12 +80,12 @@ export function mysqlCreateTable(options: { table: string, columns: Column[] }) 
     return queryRows(query);
 }
 
-export function mysqlDropTable(table: string) {
+function mysqlDropTable(table: string) {
     const query = `DROP TABLE IF EXISTS ${table}`
     return queryRows(query)
 }
 
-export function mysqlInsertInto(options: InsertInto): Promise<any> {
+function mysqlInsertInto(options: InsertInto): Promise<any> {
     if (options.datas) {
         return new Promise((resolve, reject) => {
             if (options.datas) {
@@ -110,14 +105,37 @@ export function mysqlInsertInto(options: InsertInto): Promise<any> {
             }
         })
         let insertQuery = `INSERT INTO ${options.table}(${keys.join()}) VALUES(${values})`;
-        return queryFirstRow(insertQuery);
+        return queryFirstRow<any>(insertQuery, true).then((res) => res.insertId)
+
     }
     throw new Error('Need to specify data or datas attribute')
 }
 
-export function mysqlSelectAll<T>(options: Table): Promise<T[]> {
+function mysqlSelectAll<T>(options: Table): Promise<T[]> {
     const query = `SELECT * FROM ${options.table}`;
     return queryRows(query);
+}
+
+function mysqlDeleteAll<T>(options: Table): Promise<number> {
+    const query = `DELETE FROM ${options.table}`;
+    return queryFirstRow<T>(query, true).then(res => res.affectedRows);
+}
+
+function mysqlSelectWhere<T>(options: SelectWhere): Promise<T[]> {
+    // No where clause, select all
+    if (options.where == null) {
+        return mysqlSelectAll(options);
+    } else {
+        let whereClause = "";
+        options.where.forEach((clause, index) => {
+            whereClause += `${clause.column} ${clause.operand ?? '='} '${clause.value}'`
+            if (index != options.where.length - 1) {
+                whereClause += ' AND '
+            }
+        })
+        const query = `SELECT * FROM ${options.table} WHERE ${whereClause}`
+        return queryRows(query);
+    }
 }
 
 export function plugin(config: Cypress.PluginConfigOptions, on: Cypress.PluginEvents, options: MysqlConfig = new MysqlConfig()) {
@@ -127,6 +145,8 @@ export function plugin(config: Cypress.PluginConfigOptions, on: Cypress.PluginEv
         mysqlCreateTable,
         mysqlDropTable,
         mysqlInsertInto,
-        mysqlSelectAll
+        mysqlSelectAll,
+        mysqlDeleteAll,
+        mysqlSelectWhere
     })
 }
