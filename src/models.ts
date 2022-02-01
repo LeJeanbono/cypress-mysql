@@ -7,9 +7,9 @@ export type Column = {
     type: string;
 }
 
-export interface InsertInto extends Table {
-    data?: any,
-    datas?: any[]
+export interface InsertInto<T> extends Table {
+    data?: T
+    datas?: T[]
 }
 
 export interface Table {

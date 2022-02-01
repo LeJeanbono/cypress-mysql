@@ -1,4 +1,5 @@
 import { MysqlTask } from '../../dist/tasks'
+import { Person } from '../models/person'
 
 describe('Mysql Commands', () => {
 
@@ -8,7 +9,7 @@ describe('Mysql Commands', () => {
         cy.task(MysqlTask.CREATE_TABLE, { table: 'person', columns: [{ key: 'id', type: 'INT PRIMARY KEY NOT NULL AUTO_INCREMENT' }, { key: 'name', type: 'VARCHAR(100)' }] })
         cy.task(MysqlTask.INSERT, { table: 'person', data: { name: 'me' } })
         // Test
-        cy.mysqlQuery('SELECT * from person').then(datas => {
+        cy.mysqlQuery<Person>('SELECT * from person').then(datas => {
             // Verify
             expect(datas).to.deep.equal([{ id: 1, name: 'me' }])
         });
@@ -20,7 +21,7 @@ describe('Mysql Commands', () => {
         cy.task(MysqlTask.CREATE_TABLE, { table: 'person', columns: [{ key: 'id', type: 'INT PRIMARY KEY NOT NULL AUTO_INCREMENT' }, { key: 'name', type: 'VARCHAR(100)' }] })
         cy.task(MysqlTask.INSERT, { table: 'person', data: { name: 'me' } })
         // Test
-        cy.mysqlSelectAll({ table: 'person' }).then(datas => {
+        cy.mysqlSelectAll<Person>({ table: 'person' }).then(datas => {
             // Verify
             expect(datas).to.deep.equal([{ id: 1, name: 'me' }])
         });
@@ -31,7 +32,7 @@ describe('Mysql Commands', () => {
         cy.task(MysqlTask.DROP_TABLE, 'person')
         cy.task(MysqlTask.CREATE_TABLE, { table: 'person', columns: [{ key: 'id', type: 'INT PRIMARY KEY NOT NULL AUTO_INCREMENT' }, { key: 'name', type: 'VARCHAR(100)' }] })
         // Test
-        cy.mysqlInsertInto({ table: 'person', data: { name: 'bob' } }).then(res => {
+        cy.mysqlInsertInto<Person>({ table: 'person', data: { name: 'bob' } }).then(res => {
             // Verify
             expect(res).equal(1);
             cy.task(MysqlTask.SELECT_ALL, { table: 'person' }).then(datas => {
@@ -45,7 +46,7 @@ describe('Mysql Commands', () => {
         cy.task(MysqlTask.DROP_TABLE, 'person')
         cy.task(MysqlTask.CREATE_TABLE, { table: 'person', columns: [{ key: 'id', type: 'INT PRIMARY KEY NOT NULL AUTO_INCREMENT' }, { key: 'name', type: 'VARCHAR(100)' }] })
         // Test
-        cy.mysqlInsertInto({ table: 'person', datas: [{ name: 'bob' }, { name: 'bobby' }] }).then(res => {
+        cy.mysqlInsertInto<Person>({ table: 'person', datas: [{ name: 'bob' }, { name: 'bobby' }] }).then(res => {
             // Verify
             expect(res).to.deep.equal([1, 2]);
             cy.task(MysqlTask.SELECT_ALL, { table: 'person' }).then(datas => {
@@ -74,7 +75,7 @@ describe('Mysql Commands', () => {
         cy.task(MysqlTask.CREATE_TABLE, { table: 'person', columns: [{ key: 'id', type: 'INT PRIMARY KEY NOT NULL AUTO_INCREMENT' }, { key: 'name', type: 'VARCHAR(100)' }] })
         cy.task(MysqlTask.INSERT, { table: 'person', datas: [{ name: 'me' }, { name: 'me' }] })
         // Test
-        cy.mysqlSelectWhere({ table: 'person', where: [{ column: 'name', value: 'me' }] }).then(datas => {
+        cy.mysqlSelectWhere<Person>({ table: 'person', where: [{ column: 'name', value: 'me' }] }).then(datas => {
             // Verify
             expect(datas).to.deep.equal([{ id: 1, name: 'me' }, { id: 2, name: 'me' }])
         })
@@ -86,7 +87,7 @@ describe('Mysql Commands', () => {
         cy.task(MysqlTask.CREATE_TABLE, { table: 'person', columns: [{ key: 'id', type: 'INT PRIMARY KEY NOT NULL AUTO_INCREMENT' }, { key: 'name', type: 'VARCHAR(100)' }] })
         cy.task(MysqlTask.INSERT, { table: 'person', datas: [{ name: 'me' }, { name: 'me' }] })
         // Test
-        cy.task('mysqlSelectWhere', { table: 'person', where: [{ column: 'name', value: 'me' }, { column: 'id', value: 1 }] }).then(datas => {
+        cy.mysqlSelectWhere({ table: 'person', where: [{ column: 'name', value: 'me' }, { column: 'id', value: 1 }] }).then(datas => {
             // Verify
             expect(datas).to.deep.equal([{ id: 1, name: 'me' }])
         })

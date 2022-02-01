@@ -38,10 +38,10 @@ function queryRows<T>(query: string): Promise<T[]> {
     })
 }
 
-function queryFirstRow<T>(query: string, isResultSetHeader = false): Promise<T | ResultSetHeader | OkPacket | OkPacket[] | RowDataPacket[] | RowDataPacket[][]> {
+function queryFirstRow<T extends RowDataPacket[][] & RowDataPacket[] & OkPacket & OkPacket[] & ResultSetHeader>(query: string, isResultSetHeader = false): Promise<T> {
     logger.log(query);
     return new Promise((resolve, reject) => {
-        client.query(query, (err: Error, res) => {
+        client.query(query, (err: Error, res: T) => {
             if (err) {
                 return reject(err);
             }
@@ -85,7 +85,7 @@ function mysqlDropTable(table: string) {
     return queryRows(query)
 }
 
-function mysqlInsertInto(options: InsertInto): Promise<any> {
+function mysqlInsertInto<T>(options: InsertInto<Partial<T>>): Promise<any> {
     if (options.datas) {
         return new Promise((resolve, reject) => {
             if (options.datas) {
@@ -99,6 +99,7 @@ function mysqlInsertInto(options: InsertInto): Promise<any> {
         const keys = Object.keys(options.data);
         let values = "";
         keys.map((key, index) => {
+            // @ts-ignore
             values += `'${options.data[key]}'`
             if (index != keys.length - 1) {
                 values += ','
@@ -116,7 +117,7 @@ function mysqlSelectAll<T>(options: Table): Promise<T[]> {
     return queryRows(query);
 }
 
-function mysqlDeleteAll<T>(options: Table): Promise<number> {
+function mysqlDeleteAll<T extends RowDataPacket[][] & RowDataPacket[] & OkPacket & OkPacket[] & ResultSetHeader>(options: Table): Promise<number> {
     const query = `DELETE FROM ${options.table}`;
     return queryFirstRow<T>(query, true).then(res => res.affectedRows);
 }

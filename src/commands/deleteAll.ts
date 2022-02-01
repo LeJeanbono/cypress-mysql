@@ -6,7 +6,7 @@ import { MysqlTask } from "../tasks";
 declare global {
     namespace Cypress {
         interface Chainable<Subject> {
-            mysqlDeleteAll<T>(options: Table): Chainable<[T]>
+            mysqlDeleteAll(options: Table): Chainable<number>
         }
     }
 }
