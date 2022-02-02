@@ -3,7 +3,7 @@
 
 import mysql, { OkPacket, QueryError, ResultSetHeader, RowDataPacket } from "mysql2";
 import { Logger } from "./logger";
-import { Column, InsertInto, MysqlConfig, SelectWhere, Table } from "./models";
+import { Column, DeleteWhere, InsertInto, MysqlConfig, SelectWhere, Table, WhereClause } from "./models";
 
 let configuration: Cypress.PluginConfigOptions;
 let pluginConfig: MysqlConfig;
@@ -122,19 +122,28 @@ function mysqlDeleteAll<T extends RowDataPacket[][] & RowDataPacket[] & OkPacket
     return queryFirstRow<T>(query, true).then(res => res.affectedRows);
 }
 
+function mysqlDeleteWhere<T extends RowDataPacket[][] & RowDataPacket[] & OkPacket & OkPacket[] & ResultSetHeader>(options: DeleteWhere): Promise<number> {
+    const query = `DELETE FROM ${options.table} WHERE ${createWhere(options.where)}`;
+    return queryFirstRow<T>(query, true).then(res => res.affectedRows);
+}
+
+function createWhere(where: WhereClause[]) {
+    let whereClause = "";
+    where.forEach((clause, index) => {
+        whereClause += `${clause.column} ${clause.operand ?? '='} '${clause.value}'`;
+        if (index != where.length - 1) {
+            whereClause += ' AND ';
+        }
+    });
+    return whereClause;
+}
+
 function mysqlSelectWhere<T>(options: SelectWhere): Promise<T[]> {
     // No where clause, select all
     if (options.where == null) {
         return mysqlSelectAll(options);
     } else {
-        let whereClause = "";
-        options.where.forEach((clause, index) => {
-            whereClause += `${clause.column} ${clause.operand ?? '='} '${clause.value}'`
-            if (index != options.where.length - 1) {
-                whereClause += ' AND '
-            }
-        })
-        const query = `SELECT * FROM ${options.table} WHERE ${whereClause}`
+        const query = `SELECT * FROM ${options.table} WHERE ${createWhere(options.where)}`
         return queryRows(query);
     }
 }
@@ -148,6 +157,7 @@ export function plugin(config: Cypress.PluginConfigOptions, on: Cypress.PluginEv
         mysqlInsertInto,
         mysqlSelectAll,
         mysqlDeleteAll,
-        mysqlSelectWhere
+        mysqlSelectWhere,
+        mysqlDeleteWhere
     })
 }

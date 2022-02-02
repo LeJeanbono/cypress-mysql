@@ -21,12 +21,20 @@ export interface SelectById extends Table {
     id: string | number;
 }
 
-interface WhereClause {
+export interface WhereClause {
     column: string;
     operand?: string;
     value: string | number;
 }
 
-export interface SelectWhere extends Table {
+interface Where {
     where: WhereClause[]
+}
+
+export interface SelectWhere extends Table, Where {
+    
+}
+
+export interface DeleteWhere extends Table, Where {
+    
 }
