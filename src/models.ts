@@ -32,9 +32,13 @@ interface Where {
 }
 
 export interface SelectWhere extends Table, Where {
-    
+
 }
 
 export interface DeleteWhere extends Table, Where {
-    
+
+}
+
+export interface CreateTable extends Table {
+    columns: Column[]
 }

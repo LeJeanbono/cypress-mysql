@@ -107,4 +107,52 @@ describe('Mysql Commands', () => {
             expect(datas).to.deep.equal([{ id: 2, name: 'me' }])
         })
     })
+
+    it('Command drop table', () => {
+        // Init
+        cy.task(MysqlTask.QUERY, 'SELECT table_name FROM information_schema.tables WHERE table_schema = "mydb"').then(result => {
+            expect(result).to.deep.equal([{ table_name: 'person' }]);
+        })
+        // Test
+        cy.mysqlDropTable('person')
+        // Verify
+        cy.task(MysqlTask.QUERY, 'SELECT table_name FROM information_schema.tables WHERE table_schema = "mydb"').then(result => {
+            expect(result).is.empty;
+        })
+    })
+
+    it('Command create table', () => {
+        // Init
+        cy.task(MysqlTask.DROP_TABLE, 'person')
+        cy.task(MysqlTask.QUERY, 'SELECT table_name FROM information_schema.tables WHERE table_schema = "mydb"').then(result => {
+            expect(result).is.empty;
+        })
+        // Test
+        cy.mysqlCreateTable({ table: 'person', columns: [{ key: 'id', type: 'INT PRIMARY KEY NOT NULL AUTO_INCREMENT' }, { key: 'name', type: 'VARCHAR(100)' }] })
+        // Verify
+        cy.task(MysqlTask.QUERY, 'SELECT table_name FROM information_schema.tables WHERE table_schema = "mydb"').then(result => {
+            expect(result).to.deep.equal([{ table_name: 'person' }]);
+        })
+        cy.task(MysqlTask.QUERY, 'DESCRIBE person').then(columns => {
+            expect(columns).to.deep.equal([
+                {
+                    Default: null,
+                    Extra: "auto_increment",
+                    Field: "id",
+                    Key: "PRI",
+                    Null: "NO",
+                    Type: "int(11)"
+                },
+                {
+                    Default: null,
+                    Extra: "",
+                    Field: "name",
+                    Key: "",
+                    Null: "YES",
+                    Type: "varchar(100)"
+                }
+            ])
+        })
+    })
+
 })

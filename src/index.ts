@@ -3,7 +3,7 @@
 
 import mysql, { OkPacket, QueryError, ResultSetHeader, RowDataPacket } from "mysql2";
 import { Logger } from "./logger";
-import { Column, DeleteWhere, InsertInto, MysqlConfig, SelectWhere, Table, WhereClause } from "./models";
+import { CreateTable, DeleteWhere, InsertInto, MysqlConfig, SelectWhere, Table, WhereClause } from "./models";
 
 let configuration: Cypress.PluginConfigOptions;
 let pluginConfig: MysqlConfig;
@@ -68,7 +68,7 @@ function mysqlQuery<T>(query: string): Promise<T[] | null> {
     });
 }
 
-function mysqlCreateTable(options: { table: string, columns: Column[] }) {
+function mysqlCreateTable(options: CreateTable) {
     let queryColumns = '';
     options.columns.map((column, index) => {
         queryColumns += `${column.key} ${column.type}`
