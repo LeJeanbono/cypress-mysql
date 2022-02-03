@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/LeJeanbono/cypress-mysql/compare/v1.2.0...v1.2.1) (2022-02-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @types/node to v16.11.22 ([2b1c8b8](https://github.com/LeJeanbono/cypress-mysql/commit/2b1c8b8af2094f3f4f98e6f24c761711e347dbb8))
+
 # [1.2.0](https://github.com/LeJeanbono/cypress-mysql/compare/v1.1.1...v1.2.0) (2022-02-01)
 
 
