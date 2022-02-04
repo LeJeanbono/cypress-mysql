@@ -1,3 +1,11 @@
+# [1.3.0](https://github.com/LeJeanbono/cypress-mysql/compare/v1.2.1...v1.3.0) (2022-02-04)
+
+
+### Features
+
+* add command deleteWhere ([53a4427](https://github.com/LeJeanbono/cypress-mysql/commit/53a44271a91d32b1b34ce7e29dd2b79cf8f461fa))
+* add commands create/drop table ([2c949b1](https://github.com/LeJeanbono/cypress-mysql/commit/2c949b117d63bf55ebfcd318356ba29d590fac91))
+
 ## [1.2.1](https://github.com/LeJeanbono/cypress-mysql/compare/v1.2.0...v1.2.1) (2022-02-03)
 
 
