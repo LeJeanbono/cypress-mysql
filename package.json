@@ -15,7 +15,8 @@
   "dependencies": {
     "@types/mysql": "2.15.20",
     "mysql2": "2.3.3",
-    "ora": "5.4.1"
+    "ora": "5.4.1",
+    "dayjs": "1.10.7"
   },
   "devDependencies": {
     "@semantic-release/changelog": "6.0.1",

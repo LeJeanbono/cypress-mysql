@@ -1,5 +1,6 @@
 export class MysqlConfig {
     debug = false;
+    mysqlOptions: object = {};
 }
 
 export type Column = {

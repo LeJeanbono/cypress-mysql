@@ -6,28 +6,26 @@ import { Logger } from "./logger";
 import { CreateTable, DeleteWhere, InsertInto, MysqlConfig, SelectWhere, Table, WhereClause } from "./models";
 
 let configuration: Cypress.PluginConfigOptions;
-let pluginConfig: MysqlConfig;
 let client: mysql.Connection;
 let logger: Logger;
 
 function init(config: Cypress.PluginConfigOptions, options: MysqlConfig) {
     configuration = config;
-    pluginConfig = options;
     client = mysql.createConnection({
         host: configuration.env.MYSQL_HOST,
         port: configuration.env.MYSQL_PORT,
         database: configuration.env.MYSQL_DB,
         user: configuration.env.MYSQL_USER,
         password: configuration.env.MYSQL_PASSWORD,
+        ...options.mysqlOptions
     });
-    logger = new Logger(pluginConfig.debug);
+    logger = new Logger(options.debug);
 }
 
 function queryRows<T>(query: string): Promise<T[]> {
     logger.log(query);
     return new Promise((resolve, reject) => {
         client.query(query, (err: QueryError, res) => {
-            console.log(res)
             if (err) {
                 logger.log(err.message)
                 return reject(err);
@@ -100,7 +98,8 @@ function mysqlInsertInto<T>(options: InsertInto<Partial<T>>): Promise<any> {
         let values = "";
         keys.map((key, index) => {
             // @ts-ignore
-            values += `'${options.data[key]}'`
+            const value = options.data[key];
+            values += `'${value}'`
             if (index != keys.length - 1) {
                 values += ','
             }
