@@ -1,3 +1,17 @@
+# [1.4.0](https://github.com/LeJeanbono/cypress-mysql/compare/v1.3.0...v1.4.0) (2022-02-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @types/mysql to v2.15.21 ([88f1833](https://github.com/LeJeanbono/cypress-mysql/commit/88f1833f58c60645faea88e6f016d800b54115ef))
+* **deps:** update dependency @types/node to v16.11.23 ([ceee083](https://github.com/LeJeanbono/cypress-mysql/commit/ceee08332271ec6e1a691944ce9b4b192b225afd))
+* **deps:** update dependency @types/node to v16.11.24 ([646345b](https://github.com/LeJeanbono/cypress-mysql/commit/646345bb46695e53bc1c183db05ed0dcaac2b1ea))
+
+
+### Features
+
+* allow passing mysql options ([360e914](https://github.com/LeJeanbono/cypress-mysql/commit/360e9143337e082d8016b884b7ef86956a1856b6))
+
 # [1.3.0](https://github.com/LeJeanbono/cypress-mysql/compare/v1.2.1...v1.3.0) (2022-02-04)
 
 
