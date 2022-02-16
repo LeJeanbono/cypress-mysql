@@ -5,34 +5,18 @@ on:
       release:
         description: Pass true for launch release
         required: true
-
-env:
-  CI: true
-  PNPM_CACHE_FOLDER: .pnpm-store
-
 jobs:
   release:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: setup node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
-      - name: install pnpm
-        run: npm i pnpm@latest -g
-      - name: setup pnpm config
-        run: pnpm config set store-dir $PNPM_CACHE_FOLDER
-      - name: install dependencies
-        run: pnpm install
-      - name: Build
-        run: pnpm run build -r
-      - name: Release
-        if: github.event.inputs.release == 'true'
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - run: npm ci
+      - run: npm run build
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v2
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx multi-semantic-release --ignore-packages=packages/common/**,packages/test/**

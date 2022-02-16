@@ -1,1 +1,1 @@
-import 'LeJeanbono/cypress-mysql/commands';
+import '../../dist/commands'

@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "outDir": "dist",
         "target": "ES5",
         "sourceMap": true,
         "declaration": true,
@@ -7,6 +8,9 @@
         "esModuleInterop": true,
         "strict": true,
     },
+    "include": [
+        "./src"
+    ],
     "exclude": [
         "node_modules",
         "dist"

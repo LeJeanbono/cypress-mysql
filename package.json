@@ -1,26 +1,31 @@
 {
-  "name": "cypress-mysql",
-  "version": "0.0.1",
+  "name": "@cypress-tools/mysql",
+  "version": "1.4.0",
   "description": "",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "tsc",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "cy:open": "cypress open"
   },
   "dependencies": {
-    "@types/mysql": "2.15.20",
+    "@types/mysql": "2.15.21",
     "mysql2": "2.3.3",
-    "ora": "5.4.1"
+    "ora": "5.4.1",
+    "dayjs": "1.10.7"
   },
   "devDependencies": {
+    "@semantic-release/changelog": "6.0.1",
+    "@semantic-release/git": "10.0.1",
     "@types/lodash": "4.14.178",
-    "@types/node": "16.11.21",
-    "cypress": "9.3.1",
-    "typescript": "4.5.5",
-    "semantic-release": "19.0.2"
+    "@types/node": "16.11.24",
+    "cypress": "9.4.1",
+    "semantic-release": "19.0.2",
+    "typescript": "4.5.5"
   },
   "repository": {
     "type": "git",
