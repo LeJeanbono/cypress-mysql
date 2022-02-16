@@ -1,3 +1,15 @@
+## [1.4.1](https://github.com/LeJeanbono/cypress-mysql/compare/v1.4.0...v1.4.1) (2022-02-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @types/node to v16.11.25 ([fa6f45d](https://github.com/LeJeanbono/cypress-mysql/commit/fa6f45da41257e991419fe9b790443586a0a8c4b))
+* **deps:** update dependency cypress to v9.5.0 ([aaffbcb](https://github.com/LeJeanbono/cypress-mysql/commit/aaffbcbcefef71186e957b1f7537dcf8d3a3d354))
+* **deps:** update mysql docker tag to v8 ([23af91b](https://github.com/LeJeanbono/cypress-mysql/commit/23af91b7df4ba76829746fa16ab129208d575d20))
+* **deps:** update mysql docker tag to v8 ([ace9768](https://github.com/LeJeanbono/cypress-mysql/commit/ace9768db7df4974e448d15d94562b12ceff686e))
+* log mysql version ([cfa18bf](https://github.com/LeJeanbono/cypress-mysql/commit/cfa18bf6b7673fbd07335da887a397e49cd09c1b))
+* support mysql 8.0 ([9aa514e](https://github.com/LeJeanbono/cypress-mysql/commit/9aa514e7766202651c26f2ec95900e09f65f5280))
+
 # [1.4.0](https://github.com/LeJeanbono/cypress-mysql/compare/v1.3.0...v1.4.0) (2022-02-10)
 
 
