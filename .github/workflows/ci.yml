@@ -6,7 +6,7 @@ jobs:
   build: 
     runs-on: ubuntu-latest
     services:
-      mysql:
+      mysql57:
         image: mysql:5.7
         env:
           MYSQL_ROOT_PASSWORD: root
@@ -16,10 +16,25 @@ jobs:
         ports:
           - 3307:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: mydb
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+        ports:
+          - 3308:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Cypress run
+      - name: Cypress run 5.7
         uses: cypress-io/github-action@v2
         with:
           build: npm run build
+      - name: Cypress run 8.0
+        uses: cypress-io/github-action@v2
+        with:
+          build: npm run build
+          env: MYSQL_PORT=3308

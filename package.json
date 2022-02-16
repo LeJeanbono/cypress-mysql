@@ -10,7 +10,10 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "cy:open": "cypress open"
+    "cy:open": "cypress open",
+    "cy:open8": "cypress open --env MYSQL_PORT=3308",
+    "cy:run": "cypress run",
+    "cy:run8": "cypress run --env MYSQL_PORT=3308"
   },
   "dependencies": {
     "@types/mysql": "2.15.21",
@@ -23,7 +26,7 @@
     "@semantic-release/git": "10.0.1",
     "@types/lodash": "4.14.178",
     "@types/node": "16.11.24",
-    "cypress": "9.4.1",
+    "cypress": "9.5.0",
     "semantic-release": "19.0.2",
     "typescript": "4.5.5"
   },
