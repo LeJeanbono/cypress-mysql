@@ -20,6 +20,9 @@ function init(config: Cypress.PluginConfigOptions, options: MysqlConfig) {
         ...options.mysqlOptions
     });
     logger = new Logger(options.debug);
+    queryFirstRow<any>("SELECT @@VERSION", false, false).then(result => {
+        logger.log(`MySQL version: ${result['@@VERSION']}`);
+    })
 }
 
 function queryRows<T>(query: string): Promise<T[]> {
@@ -36,8 +39,9 @@ function queryRows<T>(query: string): Promise<T[]> {
     })
 }
 
-function queryFirstRow<T extends RowDataPacket[][] & RowDataPacket[] & OkPacket & OkPacket[] & ResultSetHeader>(query: string, isResultSetHeader = false): Promise<T> {
-    logger.log(query);
+function queryFirstRow<T extends RowDataPacket[][] & RowDataPacket[] & OkPacket & OkPacket[] & ResultSetHeader>(query: string, isResultSetHeader = false, log = true): Promise<T> {
+    if (log)
+        logger.log(query);
     return new Promise((resolve, reject) => {
         client.query(query, (err: Error, res: T) => {
             if (err) {
