@@ -110,13 +110,13 @@ describe('Mysql Commands', () => {
 
     it('Command drop table', () => {
         // Init
-        cy.task(MysqlTask.QUERY, 'SELECT table_name FROM information_schema.tables WHERE table_schema = "mydb"').then(result => {
-            expect(result).to.deep.equal([{ table_name: 'person' }]);
+        cy.task(MysqlTask.QUERY, 'SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = "mydb"').then(result => {
+            expect(result).to.deep.equal([{ TABLE_NAME: 'person' }]);
         })
         // Test
         cy.mysqlDropTable('person')
         // Verify
-        cy.task(MysqlTask.QUERY, 'SELECT table_name FROM information_schema.tables WHERE table_schema = "mydb"').then(result => {
+        cy.task(MysqlTask.QUERY, 'SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = "mydb"').then(result => {
             expect(result).is.empty;
         })
     })
@@ -124,34 +124,34 @@ describe('Mysql Commands', () => {
     it('Command create table', () => {
         // Init
         cy.task(MysqlTask.DROP_TABLE, 'person')
-        cy.task(MysqlTask.QUERY, 'SELECT table_name FROM information_schema.tables WHERE table_schema = "mydb"').then(result => {
+        cy.task(MysqlTask.QUERY, 'SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = "mydb"').then(result => {
             expect(result).is.empty;
         })
         // Test
         cy.mysqlCreateTable({ table: 'person', columns: [{ key: 'id', type: 'INT PRIMARY KEY NOT NULL AUTO_INCREMENT' }, { key: 'name', type: 'VARCHAR(100)' }] })
         // Verify
-        cy.task(MysqlTask.QUERY, 'SELECT table_name FROM information_schema.tables WHERE table_schema = "mydb"').then(result => {
-            expect(result).to.deep.equal([{ table_name: 'person' }]);
+        cy.task(MysqlTask.QUERY, 'SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = "mydb"').then(result => {
+            expect(result).to.deep.equal([{ TABLE_NAME: 'person' }]);
         })
         cy.task(MysqlTask.QUERY, 'DESCRIBE person').then(columns => {
-            expect(columns).to.deep.equal([
+            expect(columns[0]).to.include(
                 {
-                    Default: null,
                     Extra: "auto_increment",
                     Field: "id",
                     Key: "PRI",
                     Null: "NO",
-                    Type: "int(11)"
-                },
+                }
+            )
+            expect(columns[0].Type).contain('int')
+            expect(columns[1]).to.include(
                 {
-                    Default: null,
                     Extra: "",
                     Field: "name",
                     Key: "",
                     Null: "YES",
-                    Type: "varchar(100)"
+                    Type: 'varchar(100)'
                 }
-            ])
+            )
         })
     })
 
