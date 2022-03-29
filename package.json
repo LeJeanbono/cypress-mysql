@@ -24,7 +24,7 @@
   "devDependencies": {
     "@semantic-release/changelog": "6.0.1",
     "@semantic-release/git": "10.0.1",
-    "@types/lodash": "4.14.180",
+    "@types/lodash": "4.14.181",
     "@types/node": "16.11.26",
     "cypress": "9.5.2",
     "semantic-release": "19.0.2",
