@@ -30,11 +30,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Cypress run 5.7
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@v6
         with:
           build: npm run build
       - name: Cypress run 8.0
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@v6
         with:
           build: npm run build
           env: MYSQL_PORT=3308
