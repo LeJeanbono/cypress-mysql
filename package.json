@@ -21,7 +21,7 @@
     "ora": "5.4.1"
   },
   "devDependencies": {
-    "@semantic-release/changelog": "6.0.1",
+    "@semantic-release/changelog": "6.0.3",
     "@semantic-release/git": "10.0.1",
     "@types/node": "20.12.11",
     "cypress": "13.9.0",
