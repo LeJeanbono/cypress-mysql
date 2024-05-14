@@ -6,5 +6,8 @@
   ],
   "dockerfile": {
     "enabled": false
+  },
+  "docker-compose": {
+    "enabled": false
   }
 }
