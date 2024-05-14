@@ -18,17 +18,16 @@
   "dependencies": {
     "@types/mysql": "2.15.21",
     "mysql2": "2.3.3",
-    "ora": "5.4.1",
-    "dayjs": "1.11.11"
+    "ora": "5.4.1"
   },
   "devDependencies": {
     "@semantic-release/changelog": "6.0.1",
     "@semantic-release/git": "10.0.1",
-    "@types/lodash": "4.14.186",
     "@types/node": "20.12.11",
     "cypress": "13.9.0",
     "semantic-release": "23.1.1",
-    "typescript": "4.8.4"
+    "typescript": "4.8.4",
+    "dayjs": "1.11.11"
   },
   "repository": {
     "type": "git",

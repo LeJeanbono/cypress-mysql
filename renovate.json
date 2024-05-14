@@ -3,5 +3,8 @@
     "config:base",
     ":semanticCommits",
     ":semanticCommitTypeAll(fix)"
-  ]
+  ],
+  "dockerfile": {
+    "enabled": false
+  }
 }
