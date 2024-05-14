@@ -14,5 +14,11 @@
     "exclude": [
         "node_modules",
         "dist"
-    ]
+    ],
+    "ts-node": {
+        "compilerOptions": {
+            "module": "ESNext",
+            "moduleResolution": "Node"
+        }
+    }
 }
