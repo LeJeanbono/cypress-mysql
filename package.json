@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@types/mysql": "2.15.26",
-    "mysql2": "3.10.1",
+    "mysql2": "3.10.2",
     "ora": "5.4.1"
   },
   "devDependencies": {
