@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mysql57:
-        image: mysql:5.7
+        image: mysql:9.2
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: mydb
