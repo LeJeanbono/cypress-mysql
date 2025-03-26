@@ -16,7 +16,7 @@
     "cy:run8": "cypress run --env MYSQL_PORT=3308"
   },
   "dependencies": {
-    "@types/mysql": "2.15.26",
+    "@types/mysql": "2.15.27",
     "mysql2": "3.11.5",
     "ora": "5.4.1"
   },
