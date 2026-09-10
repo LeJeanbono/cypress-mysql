@@ -1,4 +1,5 @@
 import { defineConfig } from 'cypress'
+import { plugin } from './src'
 
 export default defineConfig({
   env: {
@@ -11,10 +12,9 @@ export default defineConfig({
   video: false,
   screenshotOnRunFailure: false,
   e2e: {
-    // We've imported your old cypress plugins here.
-    // You may want to clean this up later by importing these.
     setupNodeEvents(on, config) {
-      return require('./cypress/plugins/index.ts')(on, config)
+      plugin(on, config, { debug: true, mysqlOptions: { timezone: 'UTC' } })
+      return config
     },
   },
 })

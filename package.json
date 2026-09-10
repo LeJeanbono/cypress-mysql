@@ -1,7 +1,15 @@
 {
   "name": "@cypress-tools/mysql",
   "version": "1.5.0",
-  "description": "",
+  "description": "Cypress plugin for MySQL — query, seed and clean your database directly from your E2E tests (mysql2, TypeScript ready).",
+  "keywords": [
+    "cypress",
+    "cypress-plugin",
+    "mysql",
+    "mysql2",
+    "e2e",
+    "testing"
+  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -16,18 +24,19 @@
     "cy:run8": "cypress run --env MYSQL_PORT=3308"
   },
   "dependencies": {
-    "@types/mysql": "2.15.26",
-    "mysql2": "3.11.5",
-    "ora": "5.4.1"
+    "mysql2": "3.24.4"
   },
   "devDependencies": {
-    "@semantic-release/changelog": "6.0.3",
-    "@semantic-release/git": "10.0.1",
-    "@types/node": "20.17.10",
-    "cypress": "13.13.0",
-    "semantic-release": "24.0.0",
-    "typescript": "5.5.3",
-    "dayjs": "1.11.13"
+    "@semantic-release/changelog": "7.0.0",
+    "@semantic-release/git": "11.0.1",
+    "@types/node": "24.13.4",
+    "cypress": "16.0.0",
+    "semantic-release": "25.0.9",
+    "typescript": "5.9.3",
+    "dayjs": "1.11.23"
+  },
+  "engines": {
+    "node": ">=24"
   },
   "repository": {
     "type": "git",

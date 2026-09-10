@@ -1,4 +1,4 @@
-import { MysqlTask } from '../../dist/tasks'
+import { MysqlTask } from '../../src/tasks'
 
 describe('Mysql Tasks', () => {
 
@@ -85,7 +85,7 @@ describe('Mysql Tasks', () => {
         cy.task(MysqlTask.QUERY, 'SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = "mydb"').then(result => {
             expect(result).to.deep.equal([{ TABLE_NAME: 'person' }]);
         })
-        cy.task(MysqlTask.QUERY, 'DESCRIBE person').then(columns => {
+        cy.task(MysqlTask.QUERY, 'DESCRIBE person').then((columns: any) => {
             expect(columns[0]).to.include(
                 {
                     Extra: "auto_increment",

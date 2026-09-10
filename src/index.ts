@@ -1,7 +1,6 @@
 /// <reference types="cypress" />
-/// <reference types="mysql" />
 
-import mysql, { OkPacket, QueryError, ResultSetHeader, RowDataPacket } from "mysql2";
+import mysql, { OkPacket, ResultSetHeader, RowDataPacket } from "mysql2";
 import { Logger } from "./logger";
 import { CreateTable, DeleteWhere, InsertInto, MysqlConfig, SelectWhere, Table, WhereClause } from "./models";
 
@@ -22,36 +21,37 @@ function init(config: Cypress.PluginConfigOptions, options: MysqlConfig) {
     logger = new Logger(options.debug);
     queryFirstRow<any>("SELECT @@VERSION", false, false).then(result => {
         logger.log(`MySQL version: ${result['@@VERSION']}`);
+    }).catch(err => {
+        logger.log(`Unable to get MySQL version: ${err?.message ?? err}`);
     })
 }
 
 function queryRows<T>(query: string): Promise<T[]> {
     logger.log(query);
     return new Promise((resolve, reject) => {
-        client.query(query, (err: QueryError, res) => {
+        client.query(query, (err: Error | null, res: unknown) => {
             if (err) {
                 logger.log(err.message)
                 return reject(err);
             }
-            // @ts-ignore
-            resolve(res);
+            resolve(res as T[]);
         })
     })
 }
 
-function queryFirstRow<T extends RowDataPacket[][] & RowDataPacket[] & OkPacket & OkPacket[] & ResultSetHeader>(query: string, isResultSetHeader = false, log = true): Promise<T> {
+function queryFirstRow<T>(query: string, isResultSetHeader = false, log = true): Promise<T> {
     if (log)
         logger.log(query);
     return new Promise((resolve, reject) => {
-        client.query(query, (err: Error, res: T) => {
+        client.query(query, (err: Error | null, res: unknown) => {
             if (err) {
+                logger.log((err as Error).message);
                 return reject(err);
             }
             if (isResultSetHeader) {
-                resolve(res);
+                resolve(res as T);
             } else {
-                // @ts-ignore
-                resolve(res[0] ?? null);
+                resolve(((res as RowDataPacket[])[0] ?? null) as T);
             }
         })
     })
@@ -60,24 +60,19 @@ function queryFirstRow<T extends RowDataPacket[][] & RowDataPacket[] & OkPacket 
 function mysqlQuery<T>(query: string): Promise<T[] | null> {
     return new Promise((resolve, reject) => {
         logger.log(query)
-        client.query(query, (err, result) => {
+        client.query(query, (err: Error | null, result: unknown) => {
             if (err) {
+                logger.log((err as Error).message);
                 reject(err)
+                return;
             }
-            // @ts-ignore
-            resolve(result);
+            resolve(result as T[]);
         });
     });
 }
 
 function mysqlCreateTable(options: CreateTable) {
-    let queryColumns = '';
-    options.columns.map((column, index) => {
-        queryColumns += `${column.key} ${column.type}`
-        if (index != options.columns.length - 1) {
-            queryColumns += ', '
-        }
-    })
+    const queryColumns = options.columns.map(column => `${column.key} ${column.type}`).join(', ')
     const query = `CREATE TABLE ${options.table}(${queryColumns})`;
     return queryRows(query);
 }
@@ -89,27 +84,17 @@ function mysqlDropTable(table: string) {
 
 function mysqlInsertInto<T>(options: InsertInto<Partial<T>>): Promise<any> {
     if (options.datas) {
-        return new Promise((resolve, reject) => {
-            if (options.datas) {
-                Promise.all(options.datas.map(data => mysqlInsertInto({ table: options.table, data }))).then(datas => {
-                    resolve(datas)
-                }).catch(e => reject(e))
-            }
-        })
+        return Promise.all(options.datas.map(data => mysqlInsertInto({ table: options.table, data })))
     }
     if (options.data) {
         const keys = Object.keys(options.data);
-        let values = "";
-        keys.map((key, index) => {
+        const values = keys.map((key) => {
             // @ts-ignore
             const value = options.data[key];
-            values += `'${value}'`
-            if (index != keys.length - 1) {
-                values += ','
-            }
-        })
-        let insertQuery = `INSERT INTO ${options.table}(${keys.join()}) VALUES(${values})`;
-        return queryFirstRow<any>(insertQuery, true).then((res) => res.insertId)
+            return `'${value}'`
+        }).join(',')
+        const insertQuery = `INSERT INTO ${options.table}(${keys.join()}) VALUES(${values})`;
+        return queryFirstRow<OkPacket>(insertQuery, true).then((res) => res.insertId)
 
     }
     throw new Error('Need to specify data or datas attribute')
@@ -120,25 +105,18 @@ function mysqlSelectAll<T>(options: Table): Promise<T[]> {
     return queryRows(query);
 }
 
-function mysqlDeleteAll<T extends RowDataPacket[][] & RowDataPacket[] & OkPacket & OkPacket[] & ResultSetHeader>(options: Table): Promise<number> {
+function mysqlDeleteAll(options: Table): Promise<number> {
     const query = `DELETE FROM ${options.table}`;
-    return queryFirstRow<T>(query, true).then(res => res.affectedRows);
+    return queryFirstRow<OkPacket>(query, true).then(res => res.affectedRows);
 }
 
-function mysqlDeleteWhere<T extends RowDataPacket[][] & RowDataPacket[] & OkPacket & OkPacket[] & ResultSetHeader>(options: DeleteWhere): Promise<number> {
+function mysqlDeleteWhere(options: DeleteWhere): Promise<number> {
     const query = `DELETE FROM ${options.table} WHERE ${createWhere(options.where)}`;
-    return queryFirstRow<T>(query, true).then(res => res.affectedRows);
+    return queryFirstRow<OkPacket>(query, true).then(res => res.affectedRows);
 }
 
 function createWhere(where: WhereClause[]) {
-    let whereClause = "";
-    where.forEach((clause, index) => {
-        whereClause += `${clause.column} ${clause.operand ?? '='} '${clause.value}'`;
-        if (index != where.length - 1) {
-            whereClause += ' AND ';
-        }
-    });
-    return whereClause;
+    return where.map((clause) => `${clause.column} ${clause.operand ?? '='} '${clause.value}'`).join(' AND ');
 }
 
 function mysqlSelectWhere<T>(options: SelectWhere): Promise<T[]> {
@@ -151,8 +129,7 @@ function mysqlSelectWhere<T>(options: SelectWhere): Promise<T[]> {
     }
 }
 
-export function plugin(config: Cypress.PluginConfigOptions, on: Cypress.PluginEvents, options: MysqlConfig = new MysqlConfig()) {
-    init(config, options)
+function registerTasks(on: Cypress.PluginEvents) {
     on('task', {
         mysqlQuery,
         mysqlCreateTable,
@@ -164,3 +141,56 @@ export function plugin(config: Cypress.PluginConfigOptions, on: Cypress.PluginEv
         mysqlDeleteWhere
     })
 }
+
+/**
+ * Register the MySQL tasks on Cypress `setupNodeEvents`.
+ *
+ * Modern usage (Cypress >= 10, recommended):
+ *
+ * ```ts
+ * import { defineConfig } from 'cypress'
+ * import { plugin } from '@cypress-tools/mysql'
+ *
+ * export default defineConfig({
+ *   e2e: {
+ *     setupNodeEvents(on, config) {
+ *       plugin(on, config, { debug: true })
+ *       return config
+ *     },
+ *   },
+ * })
+ * ```
+ */
+export function plugin(
+    on: Cypress.PluginEvents,
+    config: Cypress.PluginConfigOptions,
+    options?: MysqlConfig
+): void;
+/**
+ * @deprecated Legacy signature `plugin(config, on, options)` — prefer `plugin(on, config, options)`.
+ */
+export function plugin(
+    config: Cypress.PluginConfigOptions,
+    on: Cypress.PluginEvents,
+    options?: MysqlConfig
+): void;
+export function plugin(
+    onOrConfig: Cypress.PluginEvents | Cypress.PluginConfigOptions,
+    configOrOn: Cypress.PluginConfigOptions | Cypress.PluginEvents,
+    options: MysqlConfig = new MysqlConfig()
+) {
+    // Modern signature: plugin(on, config, options)
+    if (typeof onOrConfig === 'function') {
+        init(configOrOn as Cypress.PluginConfigOptions, options)
+        registerTasks(onOrConfig as Cypress.PluginEvents)
+        return;
+    }
+    // Legacy signature: plugin(config, on, options)
+    init(onOrConfig as Cypress.PluginConfigOptions, options)
+    registerTasks(configOrOn as Cypress.PluginEvents)
+}
+
+/** Alias matching the `configurePlugin(on, config)` convention used by many Cypress plugins. */
+export const configurePlugin = plugin;
+
+export { OkPacket, ResultSetHeader, RowDataPacket };

@@ -1,5 +1,5 @@
-import dayjs = require('dayjs')
-import { MysqlTask } from '../../dist/tasks'
+import dayjs from 'dayjs'
+import { MysqlTask } from '../../src/tasks'
 import { Person } from '../models/person'
 
 describe('Mysql Tests', () => {

@@ -3,7 +3,7 @@ on:
   - pull_request
 
 jobs:
-  build: 
+  build:
     runs-on: ubuntu-latest
     services:
       mysql57:
@@ -28,13 +28,18 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
       - name: Cypress run 5.7
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v7
         with:
           build: npm run build
       - name: Cypress run 8.0
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v7
         with:
           build: npm run build
           env: MYSQL_PORT=3308
