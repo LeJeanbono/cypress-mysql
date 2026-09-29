@@ -24,7 +24,7 @@
     "cy:run8": "cypress run --env MYSQL_PORT=3308"
   },
   "dependencies": {
-    "mysql2": "3.24.4"
+    "mysql2": "3.24.5"
   },
   "devDependencies": {
     "@semantic-release/changelog": "7.0.0",
